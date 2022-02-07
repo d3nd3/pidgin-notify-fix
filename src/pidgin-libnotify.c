@@ -317,7 +317,7 @@ notify (const gchar *title,
 
 	notify_notification_set_urgency (notification, NOTIFY_URGENCY_NORMAL);
 
-	notify_notification_add_action (notification, "show", _("Show"), action_cb, NULL, NULL);
+	//notify_notification_add_action (notification, "show", _("Show"), action_cb, NULL, NULL);
 
 	if (!notify_notification_show (notification, NULL)) {
 		purple_debug_error (PLUGIN_ID, "notify(), failed to send notification\n");
