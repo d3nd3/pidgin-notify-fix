@@ -1,0 +1,73 @@
+# pidgin-notify-fix — system overview
+# A thin fork note: a 2008 pidgin-libnotify tree with exactly one line changed.
+# Zones run left to right: origin -> core -> state -> external.
+# Style classes set strokes only, so light and dark stay readable.
+
+title: |md
+  # pidgin-notify-fix
+  pidgin-libnotify 0.14 with the notification action commented out, so Ubuntu's notify-osd shows the popup instead of Pidgin's messagebox.
+| {near: top-center}
+
+direction: right
+grid-columns: 2
+grid-rows: 2
+horizontal-gap: 170
+vertical-gap: 120
+
+origin: Origin {
+  direction: down
+
+  upstream: `pidgin-libnotify` 0.14 · Duarte Henriques, SourceForge, autotools
+  import: commit `2008orig` · whole tree, generated `configure` included
+  patch: commit `disable action` · one line commented out
+  license: commit `license` · GPL text added
+
+  upstream -> import: unchanged source drop
+  import -> patch: the only behavioural change
+  patch -> license: paperwork, no code
+}
+
+state: State {
+  direction: down
+
+  open: `buddy_hash` · contact -> live `NotifyNotification`
+  prefs: purple prefs · owned by Pidgin, not files
+  build: `configure`, `Makefile.in` · committed autotools output
+  version: 0.14 · never bumped for the fork
+}
+
+core: Core {
+  direction: down
+
+  load: `PURPLE_INIT_PLUGIN` · `plugin_load` connects the signals
+  prefs: six booleans under `/plugins/gtk/libnotify/`
+  signals: buddy on/off, `received-im-msg`, `received-chat-msg`, account on
+  popup: `notify()` · 60-char escaped body, buddy icon, urgency normal
+  reuse: one notification per contact · updated, then shown again
+  removed: `notify_notification_add_action` · now a comment, no "Show" button
+}
+
+ext: External {
+  direction: down
+
+  pidgin: Pidgin 2 / libpurple · emits the signals, owns the plugin list
+  daemon: notification daemon · notify-osd, or any libnotify server
+  dbus: `org.freedesktop.Notifications` · the transport libnotify uses
+  gtk: GTK2 + GdkPixbuf · buddy and protocol icons
+}
+
+origin -> core: one plugin, one patch
+core -> state: prefs and live notifications
+core -> ext: Pidgin in, D-Bus out
+
+classes: {
+  origin: {style: {stroke: "#2f6fbf"}}
+  core: {style: {stroke: "#2f8f5f"}}
+  state: {style: {stroke: "#a86a12"; stroke-dash: 3}}
+  ext: {style: {stroke: "#8a4fbf"; stroke-dash: 5}}
+}
+
+origin.class: origin
+core.class: core
+state.class: state
+ext.class: ext
